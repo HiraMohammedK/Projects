@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Summarize Your Text</h1>
+        <form method="POST" action="/" onsubmit="return checkWordCount();">
+            <div class="form-group">
+                <label for="text">Input Text (Max 500 words)</label>
+                <textarea id="text" name="text" class="form-control" rows="10" placeholder="Enter your text here..." oninput="updateWordCount();"></textarea>
+                <small id="wordCount" class="form-text text-muted">Word count: 0/500</small>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Summary</button>
+        </form>
+
+        <hr>
+        <h2>Summary History</h2>
+        {% for summary in summaries %}
+            <div class="alert alert-info">
+                {{ summary }}
+            </div>
+        {% endfor %}
+
+        <a href="{{ url_for('clear_history') }}" class="btn btn-danger">Clear History</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        function checkWordCount() {
+            const text = document.getElementById('text').value;
+            const wordCount = text.split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+            
+            if (wordCount > 500) {
+                alert('Input text exceeds 500 words limit! Current word count: ' + wordCount + '. Please try again.');
+                return false;  // to prevent form submission when count>500
+            }
+            return true;  
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('text').value;
+            const wordCount = text.split(/\s+/).filter(function(word) {
+                return word.length > 0;
+            }).length;
+            document.getElementById('wordCount').innerText = 'Word count: ' + wordCount + '/500';
+        }
+    </script>
+</body>
+</html>
